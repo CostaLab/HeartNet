@@ -20,6 +20,6 @@ conda activate heartnet
 
 # Install the package in editable mode
 pip install -e .
-
+'''
 
 After installation, see the `analysis/` folder for usage examples and tutorials.
