@@ -37,8 +37,6 @@ def plot_umap_with_patches(adata, patch_base_folder,
     fig, ax = plt.subplots(figsize=figsize)
     ax.scatter(umap_coords[:, 0], umap_coords[:, 1], c="lightgrey", alpha=0.5, label="Cells")
 
-    print(f"Overlaying patches from: {patch_base_folder}")
-
     # Process Each Cluster
     for cluster in sorted(clusters.unique()):
         cluster_indices = np.where(clusters == cluster)[0]
@@ -215,7 +213,6 @@ def generate_patch_matrix(
     class_selected_patches = {}
     
     if os.path.exists(save_manifest):
-        print(f"Loading saved selection from {save_manifest}...")
         selected_df = pd.read_csv(save_manifest)
         for class_name in unique_classes:
             rows = selected_df[selected_df["class"] == class_name]
@@ -250,7 +247,7 @@ def generate_patch_matrix(
             class_selected_patches[class_name] = existing_patches
         
         pd.DataFrame(selected_records).to_csv(save_manifest, index=False)
-        print(f"Saved manifest to {save_manifest}")
+    
 
     # 2. Setup Figure
     n_rows = len(unique_classes)
