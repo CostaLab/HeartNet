@@ -10,6 +10,9 @@ import pandas as pd
 import random
 from PIL import Image
 import textwrap
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+from PIL import Image
 
 
 def plot_umap_with_patches(adata, patch_base_folder, 
@@ -289,5 +292,74 @@ def generate_patch_matrix(
     plt.tight_layout()
     plt.savefig(f"{save_fig_prefix}.png", dpi=dpi, bbox_inches='tight')
     plt.savefig(f"{save_fig_prefix}.pdf", bbox_inches='tight')
+    plt.show()
+
+
+
+
+def plot_comparison_final(
+    img_path_left, 
+    img_path_right, 
+    figsize=(20, 10), 
+    title_font_size=18,
+    legend_font_size_top=10,
+    legend_font_size_right=10,
+    top_legend_cols=4,
+    save_path="comparison_output.png",
+    dpi=300
+):
+   
+    distinct_colors = {
+        'Vessel': '#FF0000', 'Connective Tissue': '#00FF00', 'Fold': '#0000FF',
+        'Fat': '#FFC0CB', 'Neuronal': '#FF00FF', 'Blood': '#FF8000',
+        'Pericardium': '#00FFFF', 'Fibrosis': '#008000', 'Endocardium': '#FF8080',
+        'Fresh Myocyte Necrosis': '#80FF00', 'Immune Cells': '#0080FF',
+        'Mesothelium': '#FF69B4', 'Apoptotic Myocytes': '#80FFFF', 'Granulation Tissue': '#984ea3'
+    }
+
+    myo_colors = {
+        'myocardium': '#b01111', 'damaged myocardium 1': '#b4451f',
+        'damaged myocardium 2': '#dd9f40', 'damaged myocardium 3': '#e7d87d',
+        'fresh infarct': 'blue', 'granulation/scar': '#984ea3',
+        'fibrotic/scar': 'green', 'necrotic': '#A9A9A9', 'fat tissue': '#FF8DE6'
+    }
+
+   
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=figsize)
+
+
+    img_left = Image.open(img_path_left)
+    ax1.imshow(img_left)
+    ax1.set_title("Pathology Labels", fontsize=title_font_size, pad=30)
+    ax1.axis('off')
+    
+    patches_left = [mpatches.Patch(color=c, label=k) for k, c in distinct_colors.items()]
+    ax1.legend(
+        handles=patches_left, 
+        loc='upper center', 
+        bbox_to_anchor=(0.5, 1.3), 
+        ncol=top_legend_cols, 
+        fontsize=legend_font_size_top, 
+        frameon=False
+    )
+
+
+    img_right = Image.open(img_path_right)
+    ax2.imshow(img_right)
+    ax2.set_title("Myocardium Status", fontsize=title_font_size, pad=30)
+    ax2.axis('off')
+    
+    patches_right = [mpatches.Patch(color=c, label=k) for k, c in myo_colors.items()]
+    ax2.legend(
+        handles=patches_right, 
+        loc='center left', 
+        bbox_to_anchor=(1, 0.5), 
+        fontsize=legend_font_size_right, 
+        frameon=False
+    )
+
+  
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=dpi, bbox_inches='tight')
     plt.show()
 
